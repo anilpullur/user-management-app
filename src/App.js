@@ -1,25 +1,35 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import UserForm from './Components/UserForm';
+import UserList from './Components/UserList';
 import './App.css';
 
-function App() {
+const App = () => {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+    setUsers(storedUsers);
+  }, []);
+
+  const addUser = newUser => {
+    const updatedUsers = [...users, newUser];
+    setUsers(updatedUsers);
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
+  };
+
+  const deleteUser = index => {
+    const updatedUsers = users.filter((_, i) => i !== index);
+    setUsers(updatedUsers);
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>User Management</h2>
+      <UserForm addUser={addUser} />
+      <UserList users={users} deleteUser={deleteUser} />
     </div>
   );
-}
+};
 
 export default App;
